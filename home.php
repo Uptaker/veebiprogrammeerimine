@@ -9,6 +9,14 @@
 	if($hournow >= 8 and $hournow <= 18) {
 		$partofday = "õppimise aeg";
 	}
+	#vaatame semestri kulgemist
+	$semesterstart = new DateTime("2020-8-31");
+	$semesterend = new DateTime("2020-12-13");
+	$semesterduration = $semesterstart->diff($semesterend);
+	$semesterdurationdays = $semesterduration->format("%r%a");
+	$today = new DateTime("now");
+	//KODUNETÖÖ https://github.com/Veebiprogrammeerimine-2020/ryhm-1
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
