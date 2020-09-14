@@ -18,9 +18,8 @@
 	$semesterleft = $semesterstart->diff($today);
 	$semesterleftdays = $semesterleft->format("%r%a");
 	//percentages below
-	$percentageelapsed = $semesterleftdays/$semesterdurationdays*100;
-	$percentageelapsedRound = round($semesterpercentage,2);
-	$percentageleft = 100-$percentageelapsedRound;
+	$percentageelapsed = round($semesterleftdays/$semesterdurationdays*100,2);
+	$percentageleft = 100-$percentageelapsed;
 
 
 	//KODUNETÖÖ https://github.com/Veebiprogrammeerimine-2020/ryhm-1
