@@ -1,4 +1,35 @@
 <?php
+	//var_dump ($_POST);
+	require("../../../config.php");
+	$database = "if20_tammeoja_1";
+	//kui on idee sisestatud ja nuppu vajutatud, salvestame selle andmebaasi.
+	if(isset($_POST["ideasubmit"]) and !empty($_POST["ideasubmit"])) {
+		$conn = new mysqli($serverhost, $serverusername, $serverpassword, $database);
+		//valmistan ette sql käsu
+		$stmt = $conn->prepare("INSERT INTO myideas (idea) VALUES(?)");
+		echo $conn->error;
+		//seome käsuga päris andmed
+		//i - integer, d- decimal, s - string
+		$stmt->bind_param("s", $_POST["ideainput"]);
+		$stmt->execute();
+		$stmt->close();
+		$conn->close();
+	}
+
+	//loen lehele kõik olemasolevad mõtted
+	$conn = new mysqli($serverhost, $serverusername, $serverpassword, $database);
+	$stmt = $conn->prepare("SELECT idea FROM myideas");
+	echo $conn->error;
+	//seome tulemuse muutujaga
+	$stmt->bind_result($ideafromdb);
+	$stmt->execute();
+	$ideahtml = "";
+	while($stmt->fetch()) {
+		$ideahtml .= "<p>" .$ideafromdb ."</p>";
+	}
+	$stmt->close();
+	$conn->close();
+
 	$username = "Markus Tammeoja";
 	$fulltimenow = date("d.m.Y - H:i:s");
 	$hournow = date("H");
@@ -26,8 +57,7 @@
 	$percentageelapsed = round($semesterleftdays/$semesterdurationdays*100,2);
 	$percentageleft = 100-$percentageelapsed;
 
-
-	//KODUNETÖÖ https://github.com/Veebiprogrammeerimine-2020/ryhm-1
+	//õppetöö protsent
 	if($today = $semesterduration) { //õppetöö aktiivne
 		$semesterstatus = "1. semestri õppetöö on aktiivne ning on möödunud " .$semesterleftdays 
 		." päeva. Läbi on " .$percentageelapsed ." protsenti. Jäänud on " .$percentageleft ." protsenti";
@@ -38,10 +68,10 @@
 	if($today < $semesterduration) { //pole alanud
 		$semesterstatus = "1. semestri õppetöö ei ole veel alanud. Läbi on 0%.";
 	}
-	//õppetöö protsent
 	
 	//annan ette lubatud pildivormingute loendi
 	$picfiletypes = ["image/jpeg", "image/png"];
+
 	//loeme piltide kataloogi sisu ja näitame pilte
 	//$allfiles = scandir("../vp_pics/");
 	$allfiles = array_slice(scandir("../vp_pics/"), 2);
@@ -63,13 +93,10 @@
 	for($i = 0; $i < $piccount; $i ++) {
 		$imghtml .= '<img src="../vp_pics/' .$picfiles[$i] .'" alt="Tallinna Ülikool">';
 	}
+	require("header.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title><?php echo $username; ?> vaatab ringi</title>
-		<meta charset="UTF-8">
-	</head>
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
 		<h1>Võite vaadata vabalt ringi</h1><br>
@@ -78,7 +105,14 @@
 		<p><?php echo "Kellaajaliselt, praegu oleks " .$partofday ."."; ?></p>
 		<p><?php echo "Veebilehe looja on " .$username ."." ?><p>
 		<h3><?php echo $semesterstatus; ?>.<h3>
-		<p><?php $semesterdurationday; ?></p>
-		<p><?php echo $imghtml; ?></p>
+		<hr>
+		<?php echo $imghtml; ?>
+		<hr>
+		<form method="POST">
+			<label>Sisesta oma pähe tulnud mõte!</label>
+			<input type="text" name="ideainput" placeholder="Kirjuta siia oma mõte!">
+			<input type="submit" name="ideasubmit" value="Saada mõte ära!">
+		</form>
+		<?php echo $ideahtml; ?>
 	</body>
 </html>
