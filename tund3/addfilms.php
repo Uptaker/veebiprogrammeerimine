@@ -14,6 +14,7 @@ if(isset($_POST["filmsubmit"])) {
 	}
 	if(empty($inputerror)) {
 		savefilm($_POST["titleinput"], $_POST["yearinput"], $_POST["durationinput"], $_POST["genreinput"], $_POST["studioinput"], $_POST["directorinput"]);
+		$inputerror = "Film salvestatud!";
 	}
 }
 
