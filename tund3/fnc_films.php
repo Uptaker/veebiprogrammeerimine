@@ -26,3 +26,14 @@
         $conn->close();
         return $filmhtml;
     }
+
+    //klikkides, lähevad andmed andmebaasi..
+    function savefilm($titleinput, $yearinput, $durationinput, $genreinput, $studioinput, $directorinput) {
+        $conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+        $stmt = $conn->prepare("INSERT INTO film (pealkiri, aasta, kestus, zanr, tootja, lavastaja) VALUES(?,?,?,?,?,?)");
+        echo $conn->error;
+        $stmt->bind_param("siisss", $titleinput, $yearinput, $durationinput, $genreinput, $studioinput, $directorinput);
+        $stmt->execute();
+        $stmt->close();
+        $conn->close();
+    }

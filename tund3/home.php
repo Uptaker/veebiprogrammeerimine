@@ -90,6 +90,7 @@
 			<li><a href="home.php">Avaleht</a></li>
 			<li><a href="idearesults.php">Mõtted</a></li>
 			<li><a href="listfilms.php">Filmid</a></li>
+			<li><a href="addfilms.php">Lisa film</a></li>
 		</ul>
 
 		<h1>Võite vaadata vabalt ringi</h1><br>
