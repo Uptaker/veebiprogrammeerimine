@@ -16,7 +16,6 @@
 		$conn->close();
 	}
 
-	$username = "Markus Tammeoja";
 	$fulltimenow = date("H:i:s");
 	$hournow = date("H");
 	$partofday = "lihtsalt aeg";
@@ -87,6 +86,12 @@
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<ul>
+			<li><a href="home.php">Avaleht</a></li>
+			<li><a href="idearesults.php">Mõtted</a></li>
+			<li><a href="listfilms.php">Filmid</a></li>
+		</ul>
+
 		<h1>Võite vaadata vabalt ringi</h1><br>
 		<p>Ring on <a href="https://areait.com.au/wp-content/uploads/2017/12/circle-png-circle-icon-1600.png">siin</a>!</p>
 		<p>Lehe avamise hetk: <?php echo $dayofmonth .$monthNameset[$monthnow-1] .", " .$weekdayNameset[$weekdaynow-1] .", " .$fulltimenow; ?>.</p>
@@ -101,6 +106,6 @@
 			<input type="text" name="ideainput" placeholder="Kirjuta siia oma mõte!">
 			<input type="submit" name="ideasubmit" value="Saada mõte ära!">
 		</form>
-		<p>Et näha kõik mõtted, vajutage <a href="http://greeny.cs.tlu.ee/~tammeoja/vp/tund3/idearesults.php">siia</a>!<p>
+		<p>Et näha kõik mõtted, vajutage <a href="idearesults.php">siia</a>!<p>
 	</body>
 </html>

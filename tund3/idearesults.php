@@ -21,6 +21,11 @@ require("header.php")
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<ul>
+			<li><a href="home.php">Avaleht</a></li>
+			<li><a href="idearesults.php">Mõtted</a></li>
+			<li><a href="listfilms.php">Filmid</a></li>
+		</ul>
 		<h3> Siin on kõik olemasolevad mõtted!<h3>
 		<?php echo $ideahtml; ?>
 	</body>
