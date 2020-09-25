@@ -91,6 +91,7 @@
 			<li><a href="idearesults.php">Mõtted</a></li>
 			<li><a href="listfilms.php">Filmid</a></li>
 			<li><a href="addfilms.php">Lisa film</a></li>
+			<li><a href="adduser.php">Lisa kasutaja</a></li>
 		</ul>
 
 		<h1>Võite vaadata vabalt ringi</h1><br>
