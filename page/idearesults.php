@@ -1,5 +1,6 @@
 <?php
 //loen lehele kõik olemasolevad mõtted
+require("usesession.php");
 require("../../../config.php");
 $database = "if20_tammeoja_1";
 $conn = new mysqli($serverhost, $serverusername, $serverpassword, $database);
@@ -21,6 +22,7 @@ require("header.php")
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<p><a href="?logout=1"> Logi Välja</a></p>
 		<ul>
 			<li><a href="home.php">Avaleht</a></li>
 			<li><a href="idearesults.php">Mõtted</a></li>

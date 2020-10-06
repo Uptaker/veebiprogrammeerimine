@@ -2,6 +2,7 @@
 //loen lehele kõik olemasolevad mõtted
 require("../../../config.php");
 require("fnc_films.php");
+require("usesession.php");
 //$filmhtml = readfilms();
 //readfilms();
 require("header.php");
@@ -10,6 +11,7 @@ require("header.php");
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<p><a href="?logout=1"> Logi Välja</a></p>
 		<ul>
 			<li><a href="home.php">Avaleht</a></li>
 		</ul>

@@ -2,6 +2,7 @@
 require("../../../config.php");
 require("header.php");
 require("fnc_films.php");
+require("usesession.php");
 
 $inputerror = "";
 //kui klikkiti submit, siis.. 
@@ -23,6 +24,7 @@ if(isset($_POST["filmsubmit"])) {
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<p><a href="?logout=1"> Logi Välja</a></p>
 		<ul>
 			<li><a href="home.php">Avaleht</a></li>
 		</ul>

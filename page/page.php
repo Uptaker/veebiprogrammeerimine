@@ -1,4 +1,6 @@
 <?php
+	//algatame sessiooni
+	session_start();
 	//var_dump ($_POST);
 	require("fnc_user.php");
 	require("../../../config.php");
@@ -133,19 +135,21 @@
 			<li><a href="adduser.php">Registreerida</a></li>
 		</ul>
 
+		<hr>
 		<p>Kasutaja juba olemas? Logige sisse!</p>
 		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-		<label for="emailinput">E-mail</label>
+		<label for="emailinput">E-mail</label><br>
 		<input type="email" name="emailinput" id="emailinput" value="<?php echo $email; ?>">
 		<span><?php echo $emailerror; ?></span>
 		<br>
-		<label for="passwordinput">Salasõna</label>
+		<label for="passwordinput">Salasõna</label><br>
 		<input type="password" name="passwordinput" id="passwordinput">
 		<span><?php echo $passworderror; ?></span>
-		<br>
+		<br><br>
 		<input type="submit" name="loginsubmit" value="Logi sisse">
 		<span><?php echo $notice; ?></span>
 		</form>
+		<hr>
 
 		<p>Lehe avamise hetk: <?php echo $dayofmonth .$monthNameset[$monthnow-1] .", " .$weekdayNameset[$weekdaynow-1] .", " .$fulltimenow; ?>.</p>
 		<p><?php echo "Kellaajaliselt, praegu oleks " .$partofday ."."; ?></p>

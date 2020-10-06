@@ -1,5 +1,6 @@
 <?php
 	//var_dump ($_POST);
+	require("usesession.php");
 	require("../../../config.php");
 	$database = "if20_tammeoja_1";
 	//kui on idee sisestatud ja nuppu vajutatud, salvestame selle andmebaasi.
@@ -82,23 +83,26 @@
 	// }
 	require("header.php");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<body>
 		<img src="../img/vp_banner.png" alt="Veebiprogrammeerimise pilt">
+		<p><a href="?logout=1"> Logi Välja</a></p>
+
 		<ul>
 			<li><a href="home.php">Avaleht</a></li>
 			<li><a href="idearesults.php">Mõtted</a></li>
 			<li><a href="listfilms.php">Filmid</a></li>
 			<li><a href="addfilms.php">Lisa film</a></li>
-			<li><a href="adduser.php">Lisa kasutaja</a></li>
+			<li><a href="userprofile.php">Kasutaja profiil</a></li>
 		</ul>
 
 		<h1>Võite vaadata vabalt ringi</h1><br>
 		<p>Ring on <a href="https://areait.com.au/wp-content/uploads/2017/12/circle-png-circle-icon-1600.png">siin</a>!</p>
 		<p>Lehe avamise hetk: <?php echo $dayofmonth .$monthNameset[$monthnow-1] .", " .$weekdayNameset[$weekdaynow-1] .", " .$fulltimenow; ?>.</p>
 		<p><?php echo "Kellaajaliselt, praegu oleks " .$partofday ."."; ?></p>
-		<p><?php echo "Veebilehe looja on " .$username ."." ?><p>
+		<p><?php echo "Tere tulemast, " .$_SESSION["userfirstname"] ." " .$_SESSION["userlastname"] ."." ?><p>
 		<h3><?php echo $semesterstatus; ?>.<h3>
 		<hr>
 		<?php echo $imghtml; ?>
