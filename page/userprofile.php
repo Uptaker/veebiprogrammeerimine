@@ -26,8 +26,8 @@ require("header.php");
 		</ul>
 		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 			<label for="descriptioninput">Minu lühikirjeldus</label> <br>
-			<textarea rows="10" cols="80" name="descriptioninput" id="descriptioninput" placeholder="Minu lühikirjeldus..">
-				<?php $userdescription; ?>
+			<textarea rows="10" cols="80" name="descriptioninput" id="descriptioninput" placeholder="<?php readuserdescription();?>">
+				<?php readuserdescription(); ?>
 			</textarea>
 			<br>
 			<label for="bgcolorinput">Minu valitud taustavärv</label>

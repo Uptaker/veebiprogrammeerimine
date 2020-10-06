@@ -2,6 +2,7 @@
 	//var_dump ($_POST);
 	require("usesession.php");
 	require("../../../config.php");
+	require("fnc_user.php");
 	$database = "if20_tammeoja_1";
 	//kui on idee sisestatud ja nuppu vajutatud, salvestame selle andmebaasi.
 	if(isset($_POST["ideasubmit"]) and !empty($_POST["ideasubmit"])) {
@@ -103,7 +104,9 @@
 		<p>Lehe avamise hetk: <?php echo $dayofmonth .$monthNameset[$monthnow-1] .", " .$weekdayNameset[$weekdaynow-1] .", " .$fulltimenow; ?>.</p>
 		<p><?php echo "Kellaajaliselt, praegu oleks " .$partofday ."."; ?></p>
 		<p><?php echo "Tere tulemast, " .$_SESSION["userfirstname"] ." " .$_SESSION["userlastname"] ."." ?><p>
-		<h3><?php echo $semesterstatus; ?>.<h3>
+		<h3><?php echo $semesterstatus; ?>.<h3> <br>
+		<h3>Lühitutvustus:</h3>
+		<p><?php echo readuserdescription(); ?></p>
 		<hr>
 		<?php echo $imghtml; ?>
 		<hr>

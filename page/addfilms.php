@@ -1,6 +1,5 @@
 <?php
 require("../../../config.php");
-require("header.php");
 require("fnc_films.php");
 require("usesession.php");
 
@@ -19,6 +18,7 @@ if(isset($_POST["filmsubmit"])) {
 	}
 }
 
+require("header.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
