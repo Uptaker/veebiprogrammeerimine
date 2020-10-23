@@ -97,6 +97,9 @@
 			<li><a href="listfilms.php">Filmid</a></li>
 			<li><a href="addfilms.php">Lisa film</a></li>
 			<li><a href="userprofile.php">Kasutaja profiil</a></li>
+			<li><a href="addfilmgenre.php">Modifitseeri filmid</a></li>
+			<li><a href="listfilmpersons.php">Filmi tegelased</a></li>
+			<li><a href="addfilminfo.php">Lisa info</a></li>
 		</ul>
 
 		<h1>Võite vaadata vabalt ringi</h1><br>
