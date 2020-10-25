@@ -10,10 +10,16 @@ require("header.php");
 $sortby = 0;
 $sortorder = 0;
 
-function readpersonsinfilm($sortby, $sortorder) {
+$selectedfilm = "";
+$selectedtype = "";
+
+$filmnotice = "";
+$typenotice = "";
+
+function readCharacters($selected, $selectedfilm, $sortby, $sortorder) {
 	$studionotice = "<p>Kahjuks filmitegelasi ei leitud!<p>\n";
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$SQLsentence = "SELECT first_name, last_name, role, title 
+	$SQLsentence = "SELECT first_name, last_name, role
 					FROM person 
 					JOIN person_in_movie 
 					ON person.person_id = person_in_movie.person_id 
@@ -21,14 +27,6 @@ function readpersonsinfilm($sortby, $sortorder) {
 					ON movie.movie_id = person_in_movie.movie_id";
 	if($sortby == 0 and $sortorder == 0) {
 		$stmt = $conn->prepare($SQLsentence); // fetching data UNSORTED
-	}
-
-	if($sortby == 4) { //TITLE
-		if($sortorder == 2) {
-			$stmt = $conn->prepare($SQLsentence ." ORDER BY title DESC"); // fetching data SORTED BY title DESCENDING
-		} else {
-			$stmt = $conn->prepare($SQLsentence ." ORDER BY title");
-		}
 	}
 
 	if($sortby == 3) { //PERSON
@@ -45,17 +43,14 @@ function readpersonsinfilm($sortby, $sortorder) {
 			$stmt = $conn->prepare($SQLsentence ." ORDER BY role");
 		}
 	}
-
-
 	echo $conn->error;
-	$stmt->bind_result($firstnamefromdb, $lastnamefromdb, $rolefromdb, $titlefromdb);
+	$stmt->bind_result($firstnamefromdb, $lastnamefromdb, $rolefromdb);
 	$stmt->execute();
 	$lines = "";
 	while($stmt->fetch()) {
 		$lines .= "<tr> \n";
 		$lines .= "\t <td>".$firstnamefromdb ." " .$lastnamefromdb ."</td>";
 		$lines .= '<td>' .$rolefromdb .'</td>';
-		$lines .= '<td>' .$titlefromdb ."</td>\n";
 		$lines .= "</tr> \n";
 	}
 	if(!empty($lines)) {
@@ -67,9 +62,6 @@ function readpersonsinfilm($sortby, $sortorder) {
 		$notice .= '<th>Roll filmis
 		&nbsp;<a href="?sortby=2&sortorder=1">&uarr;</a>
 		&nbsp;<a href="?sortby=2&sortorder=2">&darr;</a></th>' ."\n";
-		$notice .= '<th>Film 
-		&nbsp;<a href="?sortby=4&sortorder=1">&uarr;</a>
-		&nbsp;<a href="?sortby=4&sortorder=2">&darr;</a> </th>' ."\n";
 		$notice .= "</tr> \n";
 		$notice .= $lines;
 		$notice .= "</table> \n";
@@ -79,38 +71,34 @@ function readpersonsinfilm($sortby, $sortorder) {
 	return $notice;
 }
 
-//vana
-function old_readpersonsinfilm() {
-	$studionotice = "<p>Kahjuks filmitegelasi ei leitud!<p>\n";
-    $conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-    $stmt = $conn->prepare("SELECT first_name, last_name, role, title 
-	FROM person 
-	JOIN person_in_movie 
-	ON person.person_id = person_in_movie.person_id 
-	JOIN movie 
-	ON movie.movie_id = person_in_movie.movie_id"); // fetching data
-	echo $conn->error;
-	$stmt->bind_result($firstnamefromdb, $lastnamefromdb, $rolefromdb, $titlefromdb);
-	$stmt->execute();
-	$lines = "";
-	while($stmt->fetch()) {
-		$lines .= '<p>' .$firstnamefromdb .' ' .$lastnamefromdb;
-		if(!empty($rolefromdb)) {
-			$lines .= ' tegelane ' .$rolefromdb;
-		}
-		$lines .= ' on filmis "' .$titlefromdb .'".' ."\n";
-	}
-	if(!empty($lines)) {
-		$notice = $lines;
-	}
-	$stmt->close();
-	$conn->close();
-	return $notice;
+if(isset($_POST["filmsubmit"])) {
+	if(!empty($_POST["filminput"])) {
+	$selectedfilm = intval($_POST["filminput"]);
+ 	} else {
+		 $filmnotice = " Valige film!";
+	 }
 }
 
+if(isset($_POST["typesubmit"])) {
+	if(!empty($_POST["typeinput"])) {
+		$selectedtype = intval($_POST["typeinput"]);
+		if($selectedtype = 1) { //tegelased
+			$typenotice = readCharacters($selectedtype, $selectedfilm, $sortby, $sortorder);
+		}
+		if($selectedtype = 2) { //näitlejad
+			$typenotice = "Näitan kõik näitlejatega seotud infot..";
+		}
+		if($selectedtype = "3") { //tsitaadid
+			$typenotice = "Näitan kõik tsitaatidega seotud infot..";
+ 	} else {
+		$typenotice = " Valige otsingu tüüp!";
+		}
+	 }
+	
+}
+var_dump($selectedtype, $selectedfilm);
+
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 	<body>
@@ -119,6 +107,25 @@ function old_readpersonsinfilm() {
 		<ul>
 			<li><a href="home.php">Avaleht</a></li>
 		</ul>
+		<h3></h3>
+		<h2>Mis filmi kohta kuvata infot?</h2>
+		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+			<?php
+				echo readmovietoselect($selectedfilm);
+			?>
+			<input type="submit" name="filmsubmit" value="Otsi"><span><?php echo $filmnotice; ?></span>
+		</form>
+		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+			<select name="typeinput">
+				<option value="" selected disabled>Vali tüüp</option>
+				<option <?php if($selectedtype == 1 ) {echo "selected ";} ?>value="1">Tegelased</option>
+				<option <?php if($selectedtype == 2 ) {echo "selected ";} ?>value="2">Näitlejad</option>
+				<option <?php if($selectedtype == 3 ) {echo "selected ";} ?>value="3">Tsitaadid</option>
+			</select>
+			<input type="submit" name="typesubmit" value="Otsingu tüüp"><span><?php echo $typenotice; ?></span>
+		</form>
+
+
 		<h3> FILMI TEGELASEEEED</h3>
 		<?php 
 		if(isset($_GET["sortby"]) and isset($_GET["sortorder"])) {

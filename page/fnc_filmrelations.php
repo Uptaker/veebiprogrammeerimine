@@ -227,6 +227,7 @@ function storenewpersonrelation($selectedfilm, $selectedperson, $selectedpositio
 
 function listRoles($selectedrole, $selectedfilm) {
 	$rolenotice = "";
+	$notice = "";
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
 	$stmt = $conn->prepare("SELECT person_in_movie_id, role FROM person_in_movie WHERE movie_id = ?");
 	$conn->set_charset("utf8");
@@ -250,31 +251,49 @@ function listRoles($selectedrole, $selectedfilm) {
 	}
 	$stmt->close();
 	$conn->close();
-	return $rolenotice;
-
+	return array($rolenotice, $rolefromdb);
 }
-//SELECT person_in_movie_id, quote_text FROM person_in_movie
-//							JOIN quote ON person_in_movie.person_in_movie_id = quote.person_in_movie_id
-//	ignore, kthxbye						WHERE movie_id = ?, role = ?");
-function storeQuote($quotetext, $selectedrole) {
+
+function readRole($selectedrole) {
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$stmt = $conn->prepare("SELECT movie_id FROM person_in_movie WHERE person_in_movie_id = ?");
+	$conn->set_charset("utf8");
+	echo $conn->error;
+	$stmt->bind_param("i", $selectedrole);
+	$stmt->bind_result($idfromdb);
+	$stmt->execute();
+	$stmt->fetch();
+	$stmt->close();
+	$stmt = $conn->prepare("SELECT role FROM person_in_movie WHERE movie_id = ? AND person_in_movie_id = ?");
+	$stmt->bind_param("ii", $idfromdb, $selectedrole);
+	$stmt->bind_result($rolefromdb);
+	$stmt->execute();
+	$stmt->fetch();
+	$stmt->close();
+	$conn->close();
+	return array($rolefromdb, $idfromdb);
+}
+
+function storeQuote($quotetext, $selectedrole, $role) {
 	$notice = "AAAA"; // just as a test xd
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("SELECT person_in_movie_id FROM person_in_movie WHERE person_in_movie_id = ?");
+	$stmt = $conn->prepare("SELECT quote_id FROM person_in_movie
+							JOIN quote ON person_in_movie.person_in_movie_id=quote.person_in_movie_id
+							WHERE role = ? AND quote_text = ? AND person_in_movie.person_in_movie_id = ?"); //Why won't this fetch???
 	echo $conn->error;
-	$stmt->bind_param("s", $quotetext);
+	$stmt->bind_param("ssi", $role, $quotetext, $selectedrole);
 	$stmt->bind_result($idfromdb);
 	$stmt->execute();
 	if($stmt->fetch()){
-		$notice = "Selline tsitaat on juba olemas!";
+		$notice = " Selline tsitaat on juba olemas!";
 	} else {
 		$stmt->close();
-		$sql = "";
 		$stmt = $conn->prepare("INSERT INTO quote (quote_text, person_in_movie_id) VALUES(?,?)");
-		$stmt->bind_param("si", $quotetext, $idfromdb);
+		$stmt->bind_param("si", $quotetext, $selectedrole);
 		if($stmt->execute()){
-			$notice = "Uus tsitaat edukalt salvestatud!";
+			$notice = " Uus tsitaat edukalt salvestatud!";
 		} else {
-			$notice = "Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
+			$notice = " Seose salvestamisel tekkis tehniline tõrge: " .$stmt->error;
 		}
 	}
 	

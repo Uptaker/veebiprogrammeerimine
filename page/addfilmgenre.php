@@ -22,6 +22,7 @@ ini_set('display_errors', 1);
   $roles = "";
   $quotes = "";
   $quoteinput = "";
+  $roletitle = "";
 
   $filmselecthtml = readmovietoselect($selectedfilm);
   $filmgenreselecthtml = readgenretoselect($selectedgenre);
@@ -88,39 +89,47 @@ ini_set('display_errors', 1);
 
 if(isset($_POST["searchrolesubmit"])){
 	$roles = listRoles($selectedrole, $_POST["filminput"]);
-	// if(!empty($_POST["filminput"])){
-	//  	$selectedfilm = intval($_POST["filminput"]);
-	//  } else {
-	//  	$rolesearchnotice = " Vali film!";
-	//  }
-	//  if(empty($roles)) {
-	//  	$rolesearchnotice = "Tsitaati pole võimalik määrata ilma rollita!";
-	//  if(empty($rolesearchnotice)) {
-		$quotes = '<br><label for="quoteinputs">Valige roll ja sisesta tsitaat:</label><br>' .$roles
-		.'<br><textarea rows="5" cols="80" name="quoteinput" id="quoteinput" placeholder="Tsitaat.."></textarea><br>
-		<input type="submit" name="quotesubmit" value="Salvesta tsitaat"><span><?php echo $quotenotice; ?></span>';
-		$selectedfilm = intval($_POST["filminput"]);
+ 	if(!empty($_POST["filminput"])){
+		  $selectedfilm = intval($_POST["filminput"]);
+		  if(empty($roles)) {
+			$rolesearchnotice = " Filmil pole määratud rolle!";
+		  }
+  	} else {
+  		$rolesearchnotice = " Vali film!";
+	}
+	if(empty($rolesearchnotice)) {
+	$quotes = '<br><label for="quoteinput">Valige roll ja sisesta tsitaat:</label><br>' .$roles[0]
+	.'<br><textarea rows="5" cols="80" name="quoteinput" id="quoteinput" placeholder="Tsitaat.."></textarea><br>
+	<input type="submit" name="quotesubmit" value="Salvesta tsitaat"><span>' .$quotenotice .'</span';
+	}
 }
 if(isset($_POST["quotesubmit"])) {
-	if(!empty($_POST["quoteinput"])){
+	// if(!empty($_POST["quoteinput"])){
 		$quoteinput = $_POST["quoteinput"];
-	} else {
-		$quotenotice .= " Tsitaat on tühi!"; 
-	}
-	if(!empty($_POST["filmroleinput"])){
+	// } else {
+	// 	$quotenotice = " Tsitaat on tühi!"; 
+	// }
+	// if(!empty($_POST["filmroleinput"])){
 		$selectedrole = intval($_POST["filmroleinput"]);
+	// } else {
+	// 	$quotenotice = " Vali roll!";
+	// }
+	//if(!empty($quoteinput) and !empty($selectedrole)){
+	$roletitle = readRole($selectedrole);
+	if(empty($quotenotice)) {
+		$rolesearchnotice = storeQuote($quoteinput, $selectedrole, $roletitle[0]);
 	} else {
-		$quotenotice = " Vali roll!";
+		$rolesearchnotice = "Miski on pekkis";
 	}
-	$quotenotice = "tsitaat on " .$quoteinput;
-	$quotenotice .= storeQuote($quoteinput, intval($_POST["filmroleinput"]));
 }
+
+
 		
 
 
 
   
-var_dump($quoteinput, $quotenotice, $selectedrole);
+var_dump($quoteinput, $quotenotice, $selectedrole, $rolesearchnotice, $_POST['filmroleinput'], $roletitle[0], $roletitle[1]);
   require("header.php");
 ?>
 
@@ -132,7 +141,6 @@ var_dump($quoteinput, $quotenotice, $selectedrole);
     <li><a href="home.php">Avalehele</a></li>
 	<li><a href="?logout=1">Logi välja</a>!</li>
   </ul>
-  <?php echo $quoteinput; ?>
   <h2>Määrame filmile stuudio/tootja</h2>
   <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <?php
@@ -165,7 +173,7 @@ var_dump($quoteinput, $quotenotice, $selectedrole);
   </form>
   
   <hr>
-  <h2>Määrame tsitaat</h2>
+  <h2>Määrame tsitaat <b><u>- EI TÖÖTA</u></b></h2>
   <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <?php
 		echo $filmselecthtml;
