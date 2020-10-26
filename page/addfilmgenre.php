@@ -123,13 +123,6 @@ if(isset($_POST["quotesubmit"])) {
 	}
 }
 
-
-		
-
-
-
-  
-var_dump($quoteinput, $quotenotice, $selectedrole, $rolesearchnotice, $_POST['filmroleinput'], $roletitle[0], $roletitle[1]);
   require("header.php");
 ?>
 
@@ -173,7 +166,7 @@ var_dump($quoteinput, $quotenotice, $selectedrole, $rolesearchnotice, $_POST['fi
   </form>
   
   <hr>
-  <h2>Määrame tsitaat <b><u>- EI TÖÖTA</u></b></h2>
+  <h2>Määrame tsitaat</h2>
   <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
     <?php
 		echo $filmselecthtml;
