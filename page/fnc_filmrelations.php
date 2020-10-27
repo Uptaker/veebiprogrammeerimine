@@ -228,11 +228,12 @@ function storenewpersonrelation($selectedfilm, $selectedperson, $selectedpositio
 function listRoles($selectedrole, $selectedfilm) {
 	$rolenotice = "";
 	$notice = "";
+	$one = 1;
 	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
-	$stmt = $conn->prepare("SELECT person_in_movie_id, role FROM person_in_movie WHERE movie_id = ?");
+	$stmt = $conn->prepare("SELECT person_in_movie_id, role FROM person_in_movie WHERE movie_id = ? AND position_id = ?");
 	$conn->set_charset("utf8");
 	echo $conn->error;
-	$stmt->bind_param("i", $selectedfilm);
+	$stmt->bind_param("ii", $selectedfilm, $one);
 	$stmt->bind_result($idfromdb, $rolefromdb);
 	$stmt->execute();
 	$roles = "";

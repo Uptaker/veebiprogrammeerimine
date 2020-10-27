@@ -37,6 +37,7 @@ function readCharacters($selected, $selectedfilm, $sortby, $sortorder) {
 			$stmt = $conn->prepare($SQLsentence ." ORDER BY role");
 		}
 	}
+	$conn->set_charset("utf8");
 	echo $conn->error;
 	$stmt->bind_param("i", $selectedfilm);
 	$stmt->bind_result($rolefromdb);
@@ -99,6 +100,7 @@ function readActors($selected, $selectedfilm, $sortby, $sortorder) {
 			$stmt = $conn->prepare($SQLsentence ." ORDER BY birth_date");
 		}
 	}
+	$conn->set_charset("utf8");
 	echo $conn->error;
 	$stmt->bind_param("i", $selectedfilm);
 	$stmt->bind_result($firstnamefromdb, $lastnamefromdb, $rolefromdb, $birthdatefromdb);
@@ -161,6 +163,7 @@ function readQuotes($selected, $selectedfilm, $sortby, $sortorder) {
 		}
 	}
 
+	$conn->set_charset("utf8");
 	echo $conn->error;
 	$stmt->bind_param("i", $selectedfilm);
 	$stmt->bind_result($rolefromdb, $quotefromdb);
@@ -193,6 +196,41 @@ function readQuotes($selected, $selectedfilm, $sortby, $sortorder) {
 	return $notice;
 }
 
+function readInfo($selected, $selectedfilm, $sortby, $sortorder) {
+	$studionotice = "<p>Kahjuks filmitegelasi ei leitud!<p>\n";
+	$conn = new mysqli($GLOBALS["serverhost"], $GLOBALS["serverusername"], $GLOBALS["serverpassword"], $GLOBALS["database"]);
+	$SQLsentence = "SELECT production_company.company_name, genre.genre_name, movie.title, movie.description, movie.duration, movie.production_year
+					FROM movie
+					JOIN movie_genre
+					ON movie.movie_id = movie_genre.movie_id
+					JOIN movie_by_production_company
+					ON movie_by_production_company.movie_movie_id = movie.movie_id
+					JOIN production_company
+					ON movie_by_production_company.production_company_id = production_company.production_company_id
+					JOIN genre
+					ON movie_genre.genre_id = genre.genre_id
+					WHERE movie.movie_id = ?";
+	$stmt = $conn->prepare($SQLsentence);
+	$conn->set_charset("utf8");
+	echo $conn->error;
+	$stmt->bind_param("i", $selectedfilm);
+	$stmt->bind_result($studiofromdb, $genrefromdb, $titlefromdb, $descriptionfromdb, $durationfromdb, $yearfromdb);
+	$stmt->execute();
+	if($stmt->fetch()) {
+		$notice = "\n<br><b> Film:</b> " .$titlefromdb ."\n";
+		$notice .= "\n<br><b> Stuudio:</b> " .$studiofromdb ."\n";
+		$notice .= "\n<br> <b>Žanr:</b> " .$genrefromdb ."\n";
+		$notice .= "\n<br> <b>Kestus:</b> " .$durationfromdb ." minutit" ."\n";
+		$notice .= "\n<br> <b>Valmimisaasta:</b> " .$yearfromdb ."\n";
+		$notice .= "\n<br> <b>Lühitutvustus:</b> " .$descriptionfromdb ."\n";
+	} else {
+		$notice = "Andmebaasis pole filmi kohta infot!";
+	}
+	$stmt->close();
+	$conn->close();
+	return $notice;
+}
+
 if(isset($_POST["typesubmit"])) {
 	if(!empty($_POST["filminput"])) {
 		$selectedfilm = intval($_POST["filminput"]);
@@ -213,6 +251,9 @@ if(isset($_POST["typesubmit"])) {
 		}
 		if($selectedtype == "tsitaadid") { //tsitaadid
 			$typenotice = readQuotes($selectedtype, $selectedfilm, $sortby, $sortorder);
+		}
+		if($selectedtype == "info") { //tsitaadid
+			$typenotice = readInfo($selectedtype, $selectedfilm, $sortby, $sortorder);
 		}
 	 }
 	
@@ -238,12 +279,10 @@ if(isset($_POST["typesubmit"])) {
 				<option value="tegelased" <?php if($selectedtype == "tegelased" ) {echo " selected ";} ?>>Tegelased</option>
 				<option value="naitlejad" <?php if($selectedtype == "naitlejad" ) {echo " selected ";} ?>>Näitlejad</option>
 				<option value="tsitaadid" <?php if($selectedtype == "tsitaadid" ) {echo " selected ";} ?>>Tsitaadid</option>
+				<option value="info" <?php if($selectedtype == "info" ) {echo " selected ";} ?>>Üldinfo</option>
 			</select>
 			<input type="submit" name="typesubmit" value="Otsi"><span><?php echo $typenotice; ?></span>
 		</form>
-
-
-		<h3> FILMI TEGELASEEEED</h3>
 
 	</body>
 </html>
