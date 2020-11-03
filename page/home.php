@@ -18,6 +18,15 @@
 		$conn->close();
 	}
 
+	//class testing
+	require("classes/first_class.php");
+	$myclassobject = new First(10);
+	// echo "Salajane arv on: " .$myclassobject->mybusiness;
+	// echo "Salajane arv on: " .$myclassobject->everybodysbusiness;
+
+	$myclassobject->tellMe();
+	unset($myclassobject);
+
 	$fulltimenow = date("H:i:s");
 	$hournow = date("H");
 	$partofday = "lihtsalt aeg";
