@@ -2,6 +2,7 @@
 	<title>Veebiprogrammeerimine 2020</title>
 	<meta charset="UTF-8">
 
+
 	<style>
 	<?php
 		echo "body { \n";
@@ -17,5 +18,21 @@
 		}
 		echo "}";
 		?>
+	
+		a:link{
+		  color:white;
+		}
+		a:visited{
+		  color:white;
+		}
+		a:hover{
+		  color:red;
+		}
+		a:focus{
+		  color:white;
+		}
+		a:active{
+		  color:red;
+		}
 	</style>
 </head>

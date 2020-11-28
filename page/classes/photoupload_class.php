@@ -1,115 +1,159 @@
 <?php
-
-class PhotoUpload {
-    private $photoinput;
-    private $photofiletype;
-    private $mytempimage;
-    private $mynewtempimage;
-
-    function __construct($photoinput, $filetype) {
-        $this->photoinput = $photoinput;
-        //var_dump($this->photoinput);
-        $this->photofiletype = $filetype;
-        $this->createImageFromFile();
-    }
-
-    function __destruct() {
-        imagedestroy($this->mytempimage);
-    }
-
-    private function createImageFromFile() {
-        //loome pikslikogumi, pildi objekti
-		if($this->photofiletype == "jpg"){
-			$this->mytempimage = imagecreatefromjpeg($this->photoinput["tmp_name"]);
-		}
-		if($this->photofiletype == "png"){
-			$this->mytempimage = imagecreatefrompng($this->photoinput["tmp_name"]);
-		}
-		if($this->photofiletype == "gif"){
-			$this->mytempimage = imagecreatefromgif($this->photoinput["tmp_name"]);
-		}
-    }
-
-    public function addWatermark($wmfile) {
-        if(isset($this->mynewtempimage)) {
-            $watermark = imagecreatefrompng($wmfile);
-            $wmh = imagesx($watermark);
-            $wmw = imagesy($watermark);
-            $wmx = imagesx($this->mynewtempimage) - $wmw - 10;
-            $wmy = imagesy($this->mynewtempimage) - $wmh - 10;
-            //kopeerime vesimärgi vähendatud pildile
-            imagecopy($this->mynewtempimage, $watermark, $wmx, $wmy, 0, 0, $wmw, $wmh);
-            imagedestroy($watermark);
-        }
-    }
-
-    public function resizePhoto($w, $h, $keeporigproportion = true){
-		$imagew = imagesx($this->mytempimage);
-		$imageh = imagesy($this->mytempimage);
-		$neww = $w;
-		$newh = $h;
-		$cutx = 0;
-		$cuty = 0;
-		$cutsizew = $imagew;
-		$cutsizeh = $imageh;
+	class Photoupload{
+		private $uploadedphoto;
+		private $photofiletype;
+		private $mytempimage;
+		private $mynewimage;
 		
-		if($w == $h){
-			if($imagew > $imageh){
-				$cutsizew = $imageh;
-				$cutx = round(($imagew - $cutsizew) / 2);
-			} else {
-				$cutsizeh = $imagew;
-				$cuty = round(($imageh - $cutsizeh) / 2);
-			}	
-		} elseif($keeporigproportion){//kui tuleb originaaproportsioone säilitada
-			if($imagew / $w > $imageh / $h){
-				$newh = round($imageh / ($imagew / $w));
-			} else {
-				$neww = round($imagew / ($imageh / $h));
+		function __construct($photoinput, $filetype){
+			$this->uploadedphoto = $photoinput;
+			$this->photofiletype = $filetype;
+			//var_dump($this->uploadedphoto);
+			//teeme piksliobjekti
+			$this->createImageFromFile();
+		}//construct lõppeb
+		
+		function __destruct(){
+			imagedestroy($this->mytempimage);	
+		}
+		
+		private function createImageFromFile(){
+			if($this->photofiletype == "jpg"){
+				$this->mytempimage = imagecreatefromjpeg($this->uploadedphoto["tmp_name"]);
 			}
-		} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
-			if($imagew / $w < $imageh / $h){
-				$cutsizeh = round($imagew / $w * $h);
-				$cuty = round(($imageh - $cutsizeh) / 2);
-			} else {
-				$cutsizew = round($imageh / $h * $w);
-				$cutx = round(($imagew - $cutsizew) / 2);
+			if($this->photofiletype == "png"){
+				$this->mytempimage = imagecreatefrompng($this->uploadedphoto["tmp_name"]);
+			}
+			if($this->photofiletype == "gif"){
+				$this->mytempimage = imagecreatefromgif($this->uploadedphoto["tmp_name"]);
 			}
 		}
 		
-		//loome uue ajutise pildiobjekti
-		$this->mynewtempimage = imagecreatetruecolor($neww, $newh);
-		//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
-		imagesavealpha($this->mynewtempimage, true);
-		$transcolor = imagecolorallocatealpha($this->mynewtempimage, 0, 0, 0, 127);
-		imagefill($this->mynewtempimage, 0, 0, $transcolor);
-		imagecopyresampled($this->mynewtempimage, $this->mytempimage, 0, 0, $cutx, $cuty, $neww, $newh, $cutsizew, $cutsizeh);
-    }
-    
-    public function saveimage($target){
-		$notice = null;
-		if($this->photofiletype == "jpg"){
-			if(imagejpeg($this->mynewtempimage, $target, 90)){
-				$notice = 1;
-			} else {
-				$notice = 0;
+		public function resizePhoto($w, $h, $keeporigproportion = true){
+			$imagew = imagesx($this->mytempimage);
+			$imageh = imagesy($this->mytempimage);
+			$neww = $w;
+			$newh = $h;
+			$cutx = 0;
+			$cuty = 0;
+			$cutsizew = $imagew;
+			$cutsizeh = $imageh;
+			
+			if($w == $h){
+				if($imagew > $imageh){
+					$cutsizew = $imageh;
+					$cutx = round(($imagew - $cutsizew) / 2);
+				} else {
+					$cutsizeh = $imagew;
+					$cuty = round(($imageh - $cutsizeh) / 2);
+				}	
+			} elseif($keeporigproportion){//kui tuleb originaaproportsioone säilitada
+				if($imagew / $w > $imageh / $h){
+					$newh = round($imageh / ($imagew / $w));
+				} else {
+					$neww = round($imagew / ($imageh / $h));
+				}
+			} else { //kui on vaja kindlasti etteantud suurust, ehk pisut ka kärpida
+				if($imagew / $w < $imageh / $h){
+					$cutsizeh = round($imagew / $w * $h);
+					$cuty = round(($imageh - $cutsizeh) / 2);
+				} else {
+					$cutsizew = round($imageh / $h * $w);
+					$cutx = round(($imagew - $cutsizew) / 2);
+				}
+			}
+			
+			//loome uue ajutise pildiobjekti
+			$this->mynewimage = imagecreatetruecolor($neww, $newh);
+			//kui on läbipaistvusega png pildid, siis on vaja säilitada läbipaistvusega
+			imagesavealpha($this->mynewimage, true);
+			$transcolor = imagecolorallocatealpha($this->mynewimage, 0, 0, 0, 127);
+			imagefill($this->mynewimage, 0, 0, $transcolor);
+			imagecopyresampled($this->mynewimage, $this->mytempimage, 0, 0, $cutx, $cuty, $neww, $newh, $cutsizew, $cutsizeh);
+		}
+		
+		public function savePhotoFile($target){
+			$notice = null;
+			if($this->photofiletype == "jpg"){
+				if(imagejpeg($this->mynewimage, $target, 90)){
+					$notice = 1;
+				} else {
+					$notice = 0;
+				}
+			}
+			if($this->photofiletype == "png"){
+				if(imagepng($this->mynewimage, $target, 6)){
+					$notice = 1;
+				} else {
+					$notice = 0;
+				}
+			}
+			if($this->photofiletype == "gif"){
+				if(imagegif($this->mynewimage, $target)){
+					$notice = 1;
+				} else {
+					$notice = 0;
+				}
+			}
+			imagedestroy($this->mynewimage);
+			return $notice;
+		}
+	
+		public function addWatermark($watermarkfile){
+			if(isset($this->mynewimage)){
+				$watermark = imagecreatefrompng($watermarkfile);
+				$wmw = imagesx($watermark);
+				$wmh = imagesy($watermark);
+				$wmx = imagesx($this->mynewimage) - $wmw - 10;
+				$wmy = imagesy($this->mynewimage) - $wmh - 10;
+				//kopeerin vesimärgi vähendatud pildile
+				imagecopy($this->mynewimage, $watermark, $wmx, $wmy, 0, 0, $wmw, $wmh);
+				imagedestroy($watermark);
 			}
 		}
-		if($this->photofiletype == "png"){
-			if(imagepng($this->mynewtempimage, $target, 6)){
-				$notice = 1;
+		
+		public function saveOriginalPhoto($target){
+			$notice = null;
+			if(move_uploaded_file($this->uploadedphoto["tmp_name"], $target)){
+				$notice .= 1;
 			} else {
-				$notice = 0;
+				$error .= 0;
 			}
+			return $notice;
 		}
-		if($this->photofiletype == "gif"){
-			if(imagegif($this->mynewtempimage, $target)){
-				$notice = 1;
+	
+		public function checkPhoto($filenameprefix, $origphotodir, $maxfilesize) {
+			$error = null;
+			$check = getimagesize($this->uploadedphoto["tmp_name"]);
+			//var_dump($check);
+			if($check !== false){
+				if($check["mime"] == "image/jpeg"){
+					$filetype = "jpg";
+				}
+				if($check["mime"] == "image/png"){
+					$filetype = "png";
+				}
+				if($check["mime"] == "image/gif"){
+					$filetype = "gif";
+				}
 			} else {
-				$notice = 0;
+				$error = "Valitud fail ei ole pilt!";
 			}
-        }
-        imagedestroy($this->mynewtempimage);
-		return $notice;
-	}
-} //class ends
+			
+			//pildi suurus
+			if($this->uploadedphoto["size"] > $maxfilesize){
+				$error .= " Fail ületab lubatud suuruse!";
+			}
+			
+			//loon failinime
+			$timestamp = microtime(1) * 10000;
+			$filename = $filenameprefix .$timestamp ."." .$filetype;
+			
+			//kas on juba olemas
+			if(file_exists($origphotodir .$filename)){
+				$error .= " Selle nimega pildifail on juba olemas!";
+			}
+		return array($error, $filename, $filetype);
+		}
+
+	}//class lõppeb

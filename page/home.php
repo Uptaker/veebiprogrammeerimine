@@ -18,15 +18,6 @@
 		$conn->close();
 	}
 
-	//class testing
-	require("classes/first_class.php");
-	$myclassobject = new First(10);
-	// echo "Salajane arv on: " .$myclassobject->mybusiness;
-	// echo "Salajane arv on: " .$myclassobject->everybodysbusiness;
-
-	$myclassobject->tellMe();
-	unset($myclassobject);
-
 	$fulltimenow = date("H:i:s");
 	$hournow = date("H");
 	$partofday = "lihtsalt aeg";
@@ -111,6 +102,18 @@
 			<li><a href="addfilminfo.php">Lisa info</a></li>
 			<li><a href="photoupload.php">Laadi ülesse pilt</a></li>
 		</ul>
+
+		<?php
+			//class testing
+			require("classes/first_class.php");
+			$myclassobject = new First(10);
+			// echo "Salajane arv on: " .$myclassobject->mybusiness;
+			// echo "Salajane arv on: " .$myclassobject->everybodysbusiness;
+			$myclassobject->tellMe();
+			unset($myclassobject);
+		?>
+
+		
 
 		<h1>Võite vaadata vabalt ringi</h1><br>
 		<p>Ring on <a href="https://areait.com.au/wp-content/uploads/2017/12/circle-png-circle-icon-1600.png">siin</a>!</p>
