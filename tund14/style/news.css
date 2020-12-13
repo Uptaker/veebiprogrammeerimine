@@ -1,0 +1,65 @@
+
+.newsarea
+{
+	margin: 0 auto;
+	width: 50%;
+}
+
+.pagechange
+{
+	width: 50%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.newstoday
+{
+	width: 50%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.newslist
+{
+	padding: 10px;
+	margin-right: 5px;
+	clear:both;
+}
+
+.rightcontent1
+{
+	padding: 5px;
+	padding-left: 10px;
+	/* float: left; */
+	margin-left: 5px;
+	text-align: center;
+}
+
+.rightcontent2
+{
+	padding: 5px;
+	padding-left: 10px;
+	/* float: right; */
+	margin-left: 5px;
+	text-align: center;
+}
+
+
+.thumbs
+{
+	border-radius: 5px;
+	padding-left: 10px;
+	cursor: pointer;
+	float: left;
+	opacity: 0.95;
+	transform-origin: 50% 50%;
+    transition: 0.3s;
+	filter: blur(1px);
+}
+
+.thumbs:hover
+{	
+	opacity: 1;
+	filter: none;
+	transform: scale(1.1);
+}

@@ -1,5 +1,6 @@
 img/
 vp_pics/
 photoupload_orig/
-photoupload/
-thumbnail/
+photoupload_thumb/
+photoupload_normal/
+photoupload_news/
